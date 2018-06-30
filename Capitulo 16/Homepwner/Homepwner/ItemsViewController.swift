@@ -13,24 +13,15 @@ class ItemsViewController: UITableViewController {
     var itemStore: ItemStore!
     var imageStore: ImageStore!
     
+    //MARK: - Initializers
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         navigationItem.leftBarButtonItem = editButtonItem
     }
     
-    @IBAction func addNewItem(_ sender: AnyObject) {
-        // Create a new Item and add it to the store
-        let newItem = itemStore.createItem()
-        
-        // Figure out where that item is in the array
-        if let index = itemStore.allItems.index(of: newItem) {
-            let indexPath = IndexPath(row: index, section: 0)
-            
-            // Insert this new row into the table.
-            tableView.insertRows(at: [indexPath], with: .automatic)
-        }
-    }
+    //MARK: - View life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,10 +36,34 @@ class ItemsViewController: UITableViewController {
         tableView.reloadData()
     }
     
+    //MARK: - Actions
+    
+    @IBAction func addNewItem(_ sender: AnyObject) {
+        // Create a new Item and add it to the store
+        let newItem = itemStore.createItem()
+        
+        // Figure out where that item is in the array
+        if let index = itemStore.allItems.index(of: newItem) {
+            let indexPath = IndexPath(row: index, section: 0)
+            
+            // Insert this new row into the table.
+            tableView.insertRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // If the triggered segue is the "ShowItem" segue
+        
+        
         switch segue.identifier {
         case "showItem"?:
+            break
+        default:
+            preconditionFailure("Unexpected segue identifier.")
+        }
+        
+        if segue.identifier == "showItem" {
+            
             // Figure out which row was just tapped
             if let row = tableView.indexPathForSelectedRow?.row {
                 
@@ -58,10 +73,10 @@ class ItemsViewController: UITableViewController {
                 detailViewController.item = item
                 detailViewController.imageStore = imageStore
             }
-        default:
-            preconditionFailure("Unexpected segue identifier.")
         }
     }
+    
+    //MARK: - UITableViewDataSource methods
     
     override func tableView(_ tableView: UITableView,
                             moveRowAt sourceIndexPath: IndexPath,
